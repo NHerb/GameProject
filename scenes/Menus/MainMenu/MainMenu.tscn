@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/Menus/MainMenu/Start.gd" type="Script" id=1]
+[ext_resource path="res://scenes/Menus/MainMenu/Exit.gd" type="Script" id=2]
+
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends VSplitContainer
+
+
+func _ready():
+	self.rect_position.x = OS.get_real_window_size().x / 2 - get_child(0).rect_size.x / 2
+	self.rect_position.y = OS.get_real_window_size().y / 2
+	set_dragger_visibility(1)"
+
+[node name="Node" type="Node"]
+
+[node name="VerticalContainer" type="VSplitContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+script = SubResource( 1 )
+
+[node name="Start" type="Button" parent="VerticalContainer"]
+margin_right = 40.0
+margin_bottom = 20.0
+script = ExtResource( 1 )
+
+[node name="Exit" type="Button" parent="VerticalContainer"]
+margin_top = 32.0
+margin_right = 40.0
+margin_bottom = 52.0
+script = ExtResource( 2 )
+[connection signal="pressed" from="VerticalContainer/Start" to="VerticalContainer/Start" method="_on_Start_pressed"]
+[connection signal="pressed" from="VerticalContainer/Exit" to="VerticalContainer/Exit" method="_on_Exit_pressed"]

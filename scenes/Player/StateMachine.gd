@@ -11,17 +11,25 @@ func _ready():
 	state_list = {
 		'idle': get_node("Idle"),
 		'walk': get_node("Walk"),
-		'airborne': get_node("Airborne")
+		'airborne': get_node("Airborne"),
+		'attack': get_node("Attack"),
+		'dash': get_node("Dash"),
+		'dashattack': get_node("DashATK"),
+		'airattack': get_node("AirATK"),
+		'walljump': get_node("WallJump"),
+		'stagger': get_node("Stagger")
 	}
 
 # handle global input (pause, etc), but just send other inputs to current state
 func handleInput(event):
 	state_list[player.current_state].handleInput(event)
 
-func changeState(next_state):
+func changeState(new_state):
+	if not state_list[new_state].isStateValid():
+		return
 	state_list[player.current_state].end()
-	player.current_state = next_state
-	state_list[next_state].enter()
+	player.current_state = new_state
+	state_list[new_state].enter()
 
-func update():
-	state_list[player.current_state].update()
+func update(delta):
+	state_list[player.current_state].update(delta)

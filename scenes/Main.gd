@@ -1,3 +1,5 @@
+# @NOTE @TODO Walljump extremely forgiving when close to both walls simultaneously
+# Incorporate into level design or redesign walljump to fix
 extends Node
 
 

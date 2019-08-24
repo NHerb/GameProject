@@ -1,26 +1,15 @@
 extends "base_state.gd"
 
-
+# Touching a wall gives leniency with how far the player can be when WJ'ing off of it
+const WJ_DISTANCE = 15
+const WJ_TOUCH_BONUS = 10
 var walltouch_timer = null
-var walljump_timer = null
-var nearest_wall = null
-var walljump_valid = false
+var walltouch = false
 
 func _ready():
 	walltouch_timer = get_child(0)
-	walljump_timer = get_child(1)
 	walltouch_timer.set_wait_time(0.0167 * 7)
-	walljump_timer.set_wait_time(0.0167 * 20)
-	
-
-func enter():
-	# Jump under the following conditions:
-	#	* Player presses jump
-	#	* Player collided with floor last frame OR
-	#	* Player is exactly 1px above ground
-	if (player.is_on_floor() or player.test_move(player.transform, Vector2(0,1))) and Input.is_action_pressed('jump'):
-		player.velocity.y = player.JUMP_VEL
-
+	return
 
 func update(delta):
 	applyGravity(delta, true)
@@ -38,47 +27,46 @@ func update(delta):
 	# Airdrift
 	move(true)
 
-	###### experimental wall jump ######
 	if player.is_on_wall():
-		walltouch_timer.stop()
+		walltouch = true
 		walltouch_timer.start()
-		walljump_valid = true
-		if player.test_move(player.transform, Vector2(-1,0)):
-			nearest_wall = 'l'
-		elif player.test_move(player.transform, Vector2(1,0)):
-			nearest_wall = 'r'
-		else:
-			nearest_wall = null
 
 
 func end():
 	return
 
 func _on_Timer_timeout():
-	nearest_wall = null
-	walljump_valid = false
-	
-func _on_Timer2_timeout():
-	pass # Replace with function body.
+	walltouch = false
+	walltouch_timer.stop()
+
 	
 func handleInput(event):
 	if event is InputEventKey or event is InputEventJoypadButton:
-#		if Input.is_action_just_pressed('dash'):
-#			state_machine.changeState('dash')
-		if Input.is_action_pressed('attack'):
+		if Input.is_action_just_pressed('dash'):
+			state_machine.changeState('dash')
+		if Input.is_action_just_pressed('attack'):
 			state_machine.changeState('airattack')
-		elif Input.is_action_pressed('jump') and walljump_valid:
+		elif Input.is_action_just_pressed('jump'):
 			walljump()
 
 
 # Walljump after
-#	Touching the wall within the last ? frames
+#	Within x pixels of nearest wall
 #	Moving away from nearest wall
 #	Pressing Jump
 func walljump():
-	if nearest_wall == 'l' and Input.is_action_pressed('right') or nearest_wall == 'r' and Input.is_action_pressed('left'):
+	var distance = WJ_DISTANCE
+	if walltouch:
+		distance = WJ_DISTANCE + WJ_TOUCH_BONUS
+	if Input.is_action_pressed('right') and player.test_move(player.transform, Vector2(-distance,0)):
+		player.is_dashing = false
 		player.velocity.y = player.JUMP_VEL
-		if nearest_wall == 'l' and Input.is_action_pressed('dash'):
+		if Input.is_action_pressed('dash'):
+			player.is_dashing = true
 			player.velocity.x = player.DASH_SPEED
-		elif nearest_wall == 'r' and Input.is_action_pressed('dash'):
+	elif Input.is_action_pressed('left') and player.test_move(player.transform, Vector2(distance,0)):
+		player.is_dashing = false
+		player.velocity.y = player.JUMP_VEL
+		if Input.is_action_pressed('dash'):
+			player.is_dashing = true
 			player.velocity.x = -player.DASH_SPEED

@@ -28,6 +28,7 @@ func changeState(new_state):
 	if not state_list[new_state].isStateValid():
 		return
 	state_list[player.current_state].end()
+	var old_state = player.current_state
 	player.current_state = new_state
 	state_list[new_state].enter()
 

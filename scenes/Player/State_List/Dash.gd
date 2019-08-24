@@ -2,6 +2,7 @@ extends "base_state.gd"
 
 var timer = null
 var timeout = false
+var on_ground_at_start = false
 
 func _ready():
 	timer = get_child(0)
@@ -9,6 +10,7 @@ func _ready():
 
 func enter():
 	player.dashes_remaining -= 1
+	on_ground_at_start = player.onGround()
 	if player.facing == 'r':
 		player.velocity.x = player.DASH_SPEED
 	else:
@@ -16,15 +18,20 @@ func enter():
 	timer.set_wait_time(0.33)	# @TODO decide max dash time
 	timer.start()
 	timeout = false
+	player.is_dashing = true
 
 
 func end():
 	timer.stop()
+	if on_ground_at_start:
+		player.dashes_remaining = 1
+	on_ground_at_start = false
 	
 
 func handleInput(event):
 	if event is InputEventKey or event is InputEventJoypadButton:
-		if Input.is_action_just_pressed('jump'):
+		if Input.is_action_just_pressed('jump') and on_ground_at_start:
+			jump()
 			state_machine.changeState('airborne')
 		elif Input.is_action_just_pressed('attack'):
 			state_machine.changeState('dashattack')

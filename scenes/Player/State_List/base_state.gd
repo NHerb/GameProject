@@ -28,7 +28,7 @@ func handleInput(event):
 
 
 func neutralState():
-	if player.is_on_floor() or player.test_move(player.transform, Vector2(0,1)):
+	if player.onGround():
 		player.velocity.y = player.GROUNDED_GRAVITY
 		if Input.is_action_pressed('left') or Input.is_action_pressed('right'):
 			return 'walk'
@@ -42,18 +42,21 @@ func move(can_change_facing):
 	if Input.is_action_pressed('left'):
 		if can_change_facing:
 			player.facing = 'l'
-		if player.velocity.x > -(player.MOVE_SPEED):
+		if player.is_dashing:
+			player.velocity.x = -(player.DASH_SPEED)
+		else:
 			player.velocity.x = -(player.MOVE_SPEED)
 	elif Input.is_action_pressed('right'):
 		if can_change_facing:
 			player.facing = 'r'
-		if player.velocity.x < player.MOVE_SPEED:
+		if player.is_dashing:
+			player.velocity.x = player.DASH_SPEED
+		else:
 			player.velocity.x = player.MOVE_SPEED
 
 
 func applyGravity(delta, is_gravity_active):
 	if not is_gravity_active:
-		print("blanking gravity")
 		player.velocity.y = 0
 	elif player.is_on_floor():
 		return
@@ -72,3 +75,6 @@ func fallCheck():
 # Override this function to check extenuating state transition conditions - ex: >0 remaining dashes to enter a dash
 func isStateValid():
 	return true
+
+func jump():
+	player.velocity.y = player.JUMP_VEL

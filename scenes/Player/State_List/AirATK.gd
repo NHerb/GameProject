@@ -20,6 +20,7 @@ func end():
 
 func update(delta):
 	applyGravity(delta, true)
+	player.velocity.x = 0
 	move(false)
 
 

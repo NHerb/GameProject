@@ -3,12 +3,14 @@ extends "base_state.gd"
 
 func enter():
 	player.velocity.y = player.GROUNDED_GRAVITY
-	player.dashes_remaining = 1	# @TODO determine number of dashes
+	player.dashes_remaining = 1	 # @TODO decide max dashes
+	player.is_dashing = false
 	
 
 func handleInput(event):
 	if event is InputEventKey or event is InputEventJoypadButton:
 		if Input.is_action_just_pressed('jump'):
+			jump()
 			state_machine.changeState('airborne')
 		elif Input.is_action_pressed('attack'):
 			state_machine.changeState('attack')

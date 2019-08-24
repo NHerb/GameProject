@@ -12,7 +12,8 @@ var DASH_SPEED = MOVE_SPEED * 2
 var current_state = "idle"
 var state_machine = null
 var facing = 'r'
-var dashes_remaining = 1
+var dashes_remaining = 1		# @TODO decide dash count
+var is_dashing = false
 
 
 func _ready():
@@ -21,9 +22,9 @@ func _ready():
 	
 	
 func _physics_process(delta):
-	if OS.is_debug_build() and position.y > 600:
-		position.x = 375
-		position.y = 340
+	if OS.is_debug_build() and (position.y < -200 or position.y > 600 or position.x < -200 or position.x > 1200):
+		position.x = 350
+		position.y = 0
 	
 	state_machine.update(delta)
 	move_and_slide(velocity, Vector2(0,-1))
@@ -31,3 +32,8 @@ func _physics_process(delta):
 	
 func _unhandled_input(event):
 	state_machine.handleInput(event)
+	
+	
+# A more thorough check than is_on_floor(), this returns true even when gravity is not being applied.
+func onGround():
+	return is_on_floor() or test_move(transform, Vector2(0,1))

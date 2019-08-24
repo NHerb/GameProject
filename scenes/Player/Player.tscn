@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scenes/Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Player/StateVisualizer.gd" type="Script" id=2]
@@ -10,7 +10,6 @@
 [ext_resource path="res://scenes/Player/State_List/DashATK.gd" type="Script" id=8]
 [ext_resource path="res://scenes/Player/State_List/Airborne.gd" type="Script" id=9]
 [ext_resource path="res://scenes/Player/State_List/AirATK.gd" type="Script" id=10]
-[ext_resource path="res://scenes/Player/State_List/WallJump.gd" type="Script" id=11]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 15, 23 )
@@ -45,18 +44,21 @@ script = ExtResource( 4 )
 script = ExtResource( 5 )
 
 [node name="Attack" type="Node" parent="StateMachine"]
+editor/display_folded = true
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="StateMachine/Attack"]
 one_shot = true
 
 [node name="Dash" type="Node" parent="StateMachine"]
+editor/display_folded = true
 script = ExtResource( 7 )
 
 [node name="Timer" type="Timer" parent="StateMachine/Dash"]
 one_shot = true
 
 [node name="DashATK" type="Node" parent="StateMachine"]
+editor/display_folded = true
 script = ExtResource( 8 )
 
 [node name="Timer" type="Timer" parent="StateMachine/DashATK"]
@@ -68,17 +70,11 @@ script = ExtResource( 9 )
 [node name="Walltouch" type="Timer" parent="StateMachine/Airborne"]
 one_shot = true
 
-[node name="Walljump" type="Timer" parent="StateMachine/Airborne"]
-one_shot = true
-
 [node name="AirATK" type="Node" parent="StateMachine"]
 editor/display_folded = true
 script = ExtResource( 10 )
 
 [node name="Timer" type="Timer" parent="StateMachine/AirATK"]
-
-[node name="WallJump" type="Node" parent="StateMachine"]
-script = ExtResource( 11 )
 
 [node name="Stagger" type="Node" parent="StateMachine"]
 editor/display_folded = true
@@ -88,5 +84,4 @@ editor/display_folded = true
 [connection signal="timeout" from="StateMachine/Dash/Timer" to="StateMachine/Dash" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/DashATK/Timer" to="StateMachine/DashATK" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/Airborne/Walltouch" to="StateMachine/Airborne" method="_on_Timer_timeout"]
-[connection signal="timeout" from="StateMachine/Airborne/Walljump" to="StateMachine/Airborne" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/AirATK/Timer" to="StateMachine/AirATK" method="_on_Timer_timeout"]

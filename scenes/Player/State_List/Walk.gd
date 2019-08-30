@@ -5,6 +5,7 @@ func enter():
 	player.velocity.y = player.GROUNDED_GRAVITY
 	player.dashes_remaining = 1	 # @TODO decide max dashes
 	player.is_dashing = false
+	animator.play('walk')
 	
 
 func handleInput(event):

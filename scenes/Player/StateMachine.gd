@@ -34,3 +34,6 @@ func changeState(new_state):
 
 func update(delta):
 	state_list[player.current_state].update(delta)
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	state_list[player.current_state].anim_done(anim_name)

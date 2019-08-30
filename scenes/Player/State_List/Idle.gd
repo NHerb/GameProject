@@ -5,6 +5,7 @@ func enter():
 	player.velocity.y = player.GROUNDED_GRAVITY
 	player.dashes_remaining = 1	# @TODO determine number of dashes
 	player.is_dashing = false
+	animator.play('idle')
 
 
 func handleInput(event):

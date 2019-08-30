@@ -11,6 +11,9 @@ func _ready():
 	walltouch_timer.set_wait_time(0.0167 * 7)
 	return
 
+func enter():
+	animator.play('airborne')
+
 func update(delta):
 	applyGravity(delta, true)
 	
@@ -58,15 +61,22 @@ func walljump():
 	var distance = WJ_DISTANCE
 	if walltouch:
 		distance = WJ_DISTANCE + WJ_TOUCH_BONUS
+		
 	if Input.is_action_pressed('right') and player.test_move(player.transform, Vector2(-distance,0)):
 		player.is_dashing = false
 		player.velocity.y = player.JUMP_VEL
+		animator.play('walljump')
 		if Input.is_action_pressed('dash'):
 			player.is_dashing = true
 			player.velocity.x = player.DASH_SPEED
 	elif Input.is_action_pressed('left') and player.test_move(player.transform, Vector2(distance,0)):
 		player.is_dashing = false
 		player.velocity.y = player.JUMP_VEL
+		animator.play('walljump')
 		if Input.is_action_pressed('dash'):
 			player.is_dashing = true
 			player.velocity.x = -player.DASH_SPEED
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == 'walljump':
+		animator.play('airborne')

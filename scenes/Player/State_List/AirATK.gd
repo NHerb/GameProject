@@ -12,6 +12,7 @@ func _ready():
 func enter():
 	timer.set_wait_time(0.0167 * 7)
 	timer.start()
+	animator.play('airattack')
 
 
 func end():

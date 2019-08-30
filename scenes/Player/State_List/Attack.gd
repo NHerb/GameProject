@@ -12,6 +12,7 @@ func _ready():
 func enter():
 	timer.set_wait_time(0.0167 * 7)
 	timer.start()
+	animator.play('attack')
 
 
 func end():
@@ -24,5 +25,5 @@ func update(delta):
 	move(false)
 
 
-func _on_Timer_timeout():
+func anim_done(anim_name):
 	state_machine.changeState(neutralState())

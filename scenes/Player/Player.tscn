@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://scenes/Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Player/StateVisualizer.gd" type="Script" id=2]
@@ -10,9 +10,120 @@
 [ext_resource path="res://scenes/Player/State_List/DashATK.gd" type="Script" id=8]
 [ext_resource path="res://scenes/Player/State_List/Airborne.gd" type="Script" id=9]
 [ext_resource path="res://scenes/Player/State_List/AirATK.gd" type="Script" id=10]
+[ext_resource path="res://resources/placeholder_art/spritesheet_big.png" type="Texture" id=11]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 15, 23 )
+
+[sub_resource type="Animation" id=8]
+resource_name = "airattack"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 8 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "airborne"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 6 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "attack"
+length = 0.2
+step = 0.02
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.04 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 3, 4 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "dash"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 7 ]
+}
+
+[sub_resource type="Animation" id=5]
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=6]
+length = 0.1
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 1, 2 ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "walljump"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 5 ]
+}
 
 [node name="KinematicBody2D" type="KinematicBody2D"]
 collision/safe_margin = 0.01
@@ -44,7 +155,6 @@ script = ExtResource( 4 )
 script = ExtResource( 5 )
 
 [node name="Attack" type="Node" parent="StateMachine"]
-editor/display_folded = true
 script = ExtResource( 6 )
 
 [node name="Timer" type="Timer" parent="StateMachine/Attack"]
@@ -80,8 +190,25 @@ script = ExtResource( 10 )
 editor/display_folded = true
 
 [node name="Timer" type="Timer" parent="StateMachine/Stagger"]
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 11 )
+vframes = 3
+hframes = 3
+frame = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
+anims/airattack = SubResource( 8 )
+anims/airborne = SubResource( 2 )
+anims/attack = SubResource( 3 )
+anims/dash = SubResource( 4 )
+anims/idle = SubResource( 5 )
+anims/walk = SubResource( 6 )
+anims/walljump = SubResource( 7 )
 [connection signal="timeout" from="StateMachine/Attack/Timer" to="StateMachine/Attack" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/Dash/Timer" to="StateMachine/Dash" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/DashATK/Timer" to="StateMachine/DashATK" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/Airborne/Walltouch" to="StateMachine/Airborne" method="_on_Timer_timeout"]
 [connection signal="timeout" from="StateMachine/AirATK/Timer" to="StateMachine/AirATK" method="_on_Timer_timeout"]
+[connection signal="animation_finished" from="Sprite/AnimationPlayer" to="StateMachine" method="_on_AnimationPlayer_animation_finished"]
+[connection signal="animation_finished" from="Sprite/AnimationPlayer" to="StateMachine/Airborne" method="_on_AnimationPlayer_animation_finished"]

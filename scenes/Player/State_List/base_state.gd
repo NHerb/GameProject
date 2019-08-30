@@ -1,6 +1,6 @@
 extends Node
 
-
+var animator = null
 var state_machine = null
 var player = null
 var facing = 'l'
@@ -9,6 +9,7 @@ var facing = 'l'
 func _ready():
 	state_machine = get_parent()
 	player = state_machine.get_parent()
+	animator = get_node("../../Sprite/AnimationPlayer")
 
 
 func enter():
@@ -20,6 +21,9 @@ func end():
 
 
 func update(delta):
+	return
+
+func anim_done(anim_name):
 	return
 
 
@@ -42,6 +46,7 @@ func move(can_change_facing):
 	if Input.is_action_pressed('left'):
 		if can_change_facing:
 			player.facing = 'l'
+			get_node("../../Sprite").set_flip_h(true)
 		if player.is_dashing:
 			player.velocity.x = -(player.DASH_SPEED)
 		else:
@@ -49,6 +54,7 @@ func move(can_change_facing):
 	elif Input.is_action_pressed('right'):
 		if can_change_facing:
 			player.facing = 'r'
+			get_node("../../Sprite").set_flip_h(false)
 		if player.is_dashing:
 			player.velocity.x = player.DASH_SPEED
 		else:

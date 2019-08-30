@@ -19,6 +19,7 @@ func enter():
 	timer.start()
 	timeout = false
 	player.is_dashing = true
+	animator.play('dash')
 
 
 func end():
